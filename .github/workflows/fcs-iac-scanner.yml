@@ -58,7 +58,7 @@ jobs:
           falcon_client_id: ${{ secrets.FALCON_CLIENT_ID }}
           falcon_region: 'us-1'
           path: 'gcp-infra/main.tf'
-          project_owners: ${{ github.event.pusher.email }}
+          project_owners: ${{ secrets.USER_EMAIL }}
           severities: 'high,medium'
           fail_on: 'high=1'
           upload_results: true
