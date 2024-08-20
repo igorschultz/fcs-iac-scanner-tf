@@ -58,11 +58,15 @@ jobs:
           falcon_client_id: ${{ secrets.FALCON_CLIENT_ID }}
           falcon_region: 'us-1'
           path: 'gcp-infra/main.tf'
+          project_owners: ${{ github.actor }}
+          severities: 'high,medium'
+          fail_on: 'high=1'
+          upload_results: true
         env: 
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
 
       - name: Terraform Apply
-        run: terraform apply --auto-approve -var "project=${{ secrets.GOOGLE_PROJECT }}"
+        run: terraform apply --auto-approve -var "project=${{ secrets.GOOGLE_PROJECT }}" -lock=false
 
 
 
