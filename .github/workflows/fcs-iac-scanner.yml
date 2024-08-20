@@ -1,0 +1,68 @@
+# This is a basic workflow to help you get started with Actions
+
+name: fcs-iac-scanner-pipeline
+
+# Controls when the workflow will run
+on: 
+  push:
+    branches: 
+      - master
+      - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  terraform-deployment:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gcp-infra
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.1.7
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: false
+
+      - name: Terraform Init
+        run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -var "project=${{ secrets.GOOGLE_PROJECT }}"
+      
+      # Runs Falcon Cloud Security CLI
+      - name: Run FCS IaC Scan
+        uses: crowdstrike/fcs-action@v1.0.2
+        with:
+          falcon_client_id: ${{ secrets.FALCON_CLIENT_ID }}
+          falcon_region: 'us-1'
+          path: 'main.tf'
+        env: 
+          FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
+
+      - name: Terraform Apply
+        run: terraform apply --auto-approve -var "project=${{ secrets.GOOGLE_PROJECT }}"
+
+
+
