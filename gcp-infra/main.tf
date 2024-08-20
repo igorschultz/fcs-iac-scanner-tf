@@ -5,10 +5,10 @@ provider "google" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  project = var.project
-  name = "${var.project}-iac-scanner-demo-bucket"
+  project       = var.project
+  name          = "${var.project}-iac-scanner-demo-bucket"
   force_destroy = false
-  location = var.region
+  location      = var.region
 }
 
 resource "google_storage_bucket_access_control" "public_rule" {
