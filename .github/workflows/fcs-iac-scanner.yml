@@ -69,7 +69,7 @@ jobs:
           fail_on: 'high=2'
           upload_results: true
           report_formats: 'sarif'
-          output_path: '$PWD'
+          output_path: './scan-results'
         env: 
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
         
