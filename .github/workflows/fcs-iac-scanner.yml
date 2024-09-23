@@ -9,6 +9,11 @@ on:
       - master
       - main
 
+permissions:
+      id-token: write
+      contents: read
+      security-events: write
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   terraform-deployment:
@@ -60,10 +65,19 @@ jobs:
           path: 'gcp-infra/main.tf'
           project_owners: ${{ secrets.USER_EMAIL }}
           severities: 'high,medium'
-          fail_on: 'high=1'
+          fail_on: 'high=2'
           upload_results: true
+          report_formats: 'sarif'
+          output_path: './scan-results'
         env: 
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
+        
+      - name: Upload SARIF file
+        if: always()
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ./scan-results/*-scan-results.sarif
+          category: crowdstrike-fcs-iac-scanner
 
       - name: Terraform Apply
         run: terraform apply --auto-approve -var "project=${{ secrets.GOOGLE_PROJECT }}" -lock=false
