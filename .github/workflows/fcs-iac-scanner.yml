@@ -77,7 +77,7 @@ jobs:
         if: steps.fcs.outputs.exit-code != 0
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ./scan-results/*-scan-results.sarif
+          sarif_file: results.sarif
           category: crowdstrike-fcs-iac-scanner
 
       - name: Terraform Apply
