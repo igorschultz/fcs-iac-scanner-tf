@@ -69,7 +69,7 @@ jobs:
           fail_on: 'high=10'
           upload_results: true
           report_formats: 'sarif'
-          output_path: './scan-results'
+          output_path: 'gcp-infra/scan-results'
         env: 
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
         
@@ -77,7 +77,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: steps.fcs.outputs.exit-code != 0
         with:
-          sarif_file: ./scan-results/*-scan-results.sarif
+          sarif_file: gcp-infra/scan-results/*-scan-results.sarif
           category: crowdstrike-fcs-iac-scanner
 
       - name: Terraform Apply
