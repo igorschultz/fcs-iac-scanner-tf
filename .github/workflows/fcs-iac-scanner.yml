@@ -18,9 +18,9 @@ permissions:
 jobs:
   terraform-deployment:
     runs-on: ubuntu-latest
-    #defaults:
-    #  run:
-    #    working-directory: gcp-infra
+    defaults:
+      run:
+        working-directory: gcp-infra
     steps:
       - uses: actions/checkout@v4
 
@@ -59,17 +59,17 @@ jobs:
       # Runs Falcon Cloud Security CLI
       - name: Run FCS IaC Scan
         id: fcs
-        uses: crowdstrike/fcs-action@v1.0.5
+        uses: crowdstrike/fcs-action@v1.0.3
         with:
           falcon_client_id: ${{ secrets.FALCON_CLIENT_ID }}
           falcon_region: 'us-1'
-          path: './main.tf'
+          path: 'gcp-infra/main.tf'
           project_owners: ${{ secrets.USER_EMAIL }}
           severities: 'high,medium'
           fail_on: 'high=10'
           upload_results: true
           report_formats: 'sarif'
-          output_path: '$PWD/scan-results'
+          output_path: './scan-results'
         env: 
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
         
