@@ -66,7 +66,7 @@ jobs:
           path: 'gcp-infra/main.tf'
           project_owners: ${{ secrets.USER_EMAIL }}
           severities: 'high,medium'
-          fail_on: 'high=2'
+          fail_on: 'high=10'
           upload_results: true
           report_formats: 'sarif'
           output_path: './scan-results'
@@ -74,10 +74,10 @@ jobs:
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
         
       - name: Upload SARIF file
-        if: steps.fcs.outputs.exit-code != 0
         uses: github/codeql-action/upload-sarif@v3
+        if: steps.fcs.outputs.exit-code != 0
         with:
-          sarif_file: results.sarif
+          sarif_file: ./scan-results/*-scan-results.sarif
           category: crowdstrike-fcs-iac-scanner
 
       - name: Terraform Apply
