@@ -59,7 +59,7 @@ jobs:
       # Runs Falcon Cloud Security CLI
       - name: Run FCS IaC Scan
         id: fcs
-        uses: crowdstrike/fcs-action@v1.0.3
+        uses: crowdstrike/fcs-action@v1.0.6
         with:
           falcon_client_id: ${{ secrets.FALCON_CLIENT_ID }}
           falcon_region: 'us-1'
