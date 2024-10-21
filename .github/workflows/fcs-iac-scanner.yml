@@ -57,7 +57,7 @@ jobs:
         run: terraform plan -no-color -var "project=${{ secrets.GOOGLE_PROJECT }}" -lock=false
 
       - name: Create scan results directory
-        run: mkdir scan-results
+        run: mkdir ../scan-results
       
       # Runs Falcon Cloud Security CLI
       - name: Run FCS IaC Scan
