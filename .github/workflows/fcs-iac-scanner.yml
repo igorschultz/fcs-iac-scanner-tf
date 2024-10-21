@@ -55,6 +55,9 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color -var "project=${{ secrets.GOOGLE_PROJECT }}" -lock=false
+
+      - name: Create scan results directory
+        run: mkdir scan-results
       
       # Runs Falcon Cloud Security CLI
       - name: Run FCS IaC Scan
@@ -69,19 +72,19 @@ jobs:
           fail_on: 'high=10'
           upload_results: true
           report_formats: 'sarif'
-          output_path: './scan-results'
+          output_path: 'scan-results/'
         env: 
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
 
       - name: Show scan results
         run: |
-          cat /scan-results/*-scan-results.sarif
+          cat scan-results/*.sarif
 
       - name: Upload SARIF report to GitHub Code scanning
         uses: github/codeql-action/upload-sarif@v3
         if: steps.fcs.outputs.exit-code != 0
         with:
-          sarif_file: "./scan-results/*-scan-results.sarif"
+          sarif_file: "./scan-results"
           category: crowdstrike-fcs-iac-scanner
 
       - name: Terraform Apply
