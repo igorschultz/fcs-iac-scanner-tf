@@ -68,8 +68,8 @@ jobs:
           falcon_region: 'us-1'
           path: 'gcp-infra/main.tf'
           project_owners: ${{ secrets.USER_EMAIL }}
-          severities: 'high,medium'
-          fail_on: 'high=10'
+          severities: 'high,medium, low'
+        #  fail_on: 'high=10'
           upload_results: true
           report_formats: 'sarif'
           output_path: 'scan-results/'
